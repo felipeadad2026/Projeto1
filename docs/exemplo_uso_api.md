@@ -1,6 +1,7 @@
 # Exemplo de consumo do workflow via API do Dify
 
-Este guia mostra como enviar apenas um prompt de texto para o workflow e recuperar a resposta retornada pela LLM.
+Este guia mostra como enviar apenas um prompt de texto para o workflow e recuperar a resposta retornada pela LLM. Os exemplos
+refletem o comportamento do blueprint [`../workflow/dify_app.yml`](../workflow/dify_app.yml), derivado de um export válido do Dify.
 
 ## Pré-requisitos
 
@@ -51,11 +52,11 @@ curl -X POST "https://api.sua-instancia-dify.com/v1/workflows/run" \
 ```
 
 A resposta conterá o JSON do workflow, incluindo o texto retornado pelo nó Answer. No blueprint fornecido, você encontrará o
-conteúdo em `data.outputs["1003"].answer`.
+conteúdo em `data.outputs["2003"].result`.
 
 ## 4. Dicas adicionais
 
 - Ajuste os parâmetros do nó LLM (temperatura, max tokens) diretamente no Dify se quiser respostas mais criativas ou concisas.
-- Para registrar apenas a mensagem final, você pode extrair `data.outputs["1002"].text`, que é a saída bruta do nó LLM.
+- Para registrar apenas a mensagem final, você pode extrair `data.outputs["2002"].text`, que é a saída bruta do nó LLM.
 - Utilize `response_mode: streaming` se desejar receber tokens gradualmente (lembre-se de adaptar o cliente HTTP para lidar com
   stream).

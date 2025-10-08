@@ -1,28 +1,64 @@
 kind: app
 version: 0.4.0
 app:
-  description: "Fluxo simples que envia um prompt de texto para um modelo OpenAI e retorna a resposta."
-  icon: "💬"
-  icon_background: '#D2E3FC'
+  description: Fluxo simples baseado no blueprint de referência do Dify.
+  icon: "🤖"
+  icon_background: '#FFEAD5'
   mode: workflow
   name: prompt_texto_llm
   use_icon_as_answer_icon: false
-dependencies: []
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.2.6@e2665624a156f52160927bceac9e169bd7e5ae6b936ae82575e14c90af390e6e
+    version: null
 workflow:
   conversation_variables: []
   environment_variables: []
   features:
     file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
       enabled: false
-    opening_statement:
-      enabled: false
-      text: ''
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
     sensitive_word_avoidance:
       enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
     suggested_questions_after_answer:
       enabled: false
     text_to_speech:
       enabled: false
+      language: ''
+      voice: ''
   graph:
     edges:
     - data:
@@ -30,10 +66,11 @@ workflow:
         isInLoop: false
         sourceType: start
         targetType: llm
-      id: 1001-source-1002-target
-      source: '1001'
+      id: 2001-source-2002-target
+      selected: false
+      source: '2001'
       sourceHandle: source
-      target: '1002'
+      target: '2002'
       targetHandle: target
       type: custom
       zIndex: 0
@@ -41,11 +78,12 @@ workflow:
         isInIteration: false
         isInLoop: false
         sourceType: llm
-        targetType: answer
-      id: 1002-source-1003-target
-      source: '1002'
+        targetType: end
+      id: 2002-source-2003-target
+      selected: false
+      source: '2002'
       sourceHandle: source
-      target: '1003'
+      target: '2003'
       targetHandle: target
       type: custom
       zIndex: 0
@@ -53,30 +91,31 @@ workflow:
     - data:
         desc: ''
         selected: false
-        title: Start
+        title: Iniciar
         type: start
         variables:
-        - id: prompt_usuario
+        - default: ''
+          hint: ''
           label: Prompt do usuário
-          max_length: null
+          max_length: 512
           options: []
-          placeholder: 'Descreva o que deseja perguntar à LLM'
+          placeholder: "Descreva o que deseja perguntar à LLM"
           required: true
           type: text-input
           variable: prompt_usuario
-      height: 90
-      id: '1001'
+      height: 114
+      id: '2001'
       position:
-        x: 0
-        y: 0
+        x: 300
+        y: -800
       positionAbsolute:
-        x: 0
-        y: 0
+        x: 300
+        y: -800
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 240
+      width: 242
     - data:
         context:
           enabled: false
@@ -85,59 +124,72 @@ workflow:
         model:
           completion_params:
             frequency_penalty: 0
-            max_tokens: 1024
             presence_penalty: 0
-            stop: []
-            temperature: 0.7
-            top_p: 1
+            response_format: text
+            temperature: 0.5
+            top_p: 0.85
           mode: chat
-          name: gpt-4o-mini
+          name: gpt-4-turbo
           provider: langgenius/openai/openai
         prompt_template:
-        - role: system
-          text: 'Você é um assistente útil que responde diretamente às solicitações do usuário.'
-        - role: user
-          text: '{{#1001.prompt_usuario#}}'
+        - id: b8bf9d28-68c5-4e4f-9d31-d2a8a35c8df5
+          role: system
+          text: Você é um assistente útil que responde de forma clara e objetiva.
+        - id: 2dd68d68-4e64-4d83-a2a6-c89124a5ddda
+          role: user
+          text: '{{#2001.prompt_usuario#}}'
         selected: false
-        title: Responder com LLM
+        structured_output:
+          schema:
+            additionalProperties: false
+            properties: {}
+            required: []
+            type: object
+        structured_output_enabled: false
+        title: LLM
         type: llm
         variables: []
         vision:
           enabled: false
-      height: 120
-      id: '1002'
+      height: 88
+      id: '2002'
       position:
-        x: 360
-        y: 0
+        x: 660
+        y: -800
       positionAbsolute:
-        x: 360
-        y: 0
+        x: 660
+        y: -800
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 320
+      width: 242
     - data:
-        answer: '{{#1002.text#}}'
         desc: ''
+        outputs:
+        - value_selector:
+          - '2002'
+          - text
+          value_type: string
+          variable: result
         selected: false
-        title: Resposta final
-        type: answer
-        variables: []
-      height: 90
-      id: '1003'
+        title: Fim
+        type: end
+      height: 88
+      id: '2003'
       position:
-        x: 740
-        y: 0
+        x: 1000
+        y: -800
       positionAbsolute:
-        x: 740
-        y: 0
+        x: 1000
+        y: -800
       selected: false
       sourcePosition: right
       targetPosition: left
       type: custom
-      width: 240
+      width: 242
     viewport:
-      x: 0
-      y: 0
-      zoom: 1
+      x: -260
+      y: 1060
+      zoom: 1.15
+  rag_pipeline_variables: []

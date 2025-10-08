@@ -3,7 +3,9 @@
 > Última atualização: 2025-10-08
 
 Este repositório reúne os artefatos necessários para importar ou reconstruir, no Dify, um workflow bem simples: receber um texto
-de entrada, encaminhar para um modelo da OpenAI e exibir exatamente a resposta retornada pela LLM.
+de entrada, encaminhar para um modelo da OpenAI e exibir exatamente a resposta retornada pela LLM. O arquivo
+[`workflow/dify_app.yml`](workflow/dify_app.yml) foi refeito tomando como referência um export válido do Dify (formato DSL v0.4.0),
+mantendo a estrutura de dependências de marketplace e as chaves esperadas pelo importador.
 
 O objetivo é fornecer um ponto de partida mínimo para quem só precisa de uma interface estilo chat, sem campos de upload ou
 roteamento complexo.
@@ -33,7 +35,8 @@ Antes de importar o blueprint ou recriar o fluxo manualmente, confirme que:
 
 1. Para entender cada passo e montar o fluxo manualmente, siga o guia em [`docs/configuracao_app.md`](docs/configuracao_app.md).
 2. Se preferir importar tudo pronto, utilize o arquivo [`workflow/dify_app.yml`](workflow/dify_app.yml) na função **Import Workflow**
-   do Dify.
+   do Dify. Ele já inclui o plugin de marketplace `langgenius/openai` apontado no blueprint de referência (`teste1.yml`), de modo que
+   nenhuma edição manual seja necessária durante o upload.
 3. Para disparar o workflow por API, consulte [`docs/exemplo_uso_api.md`](docs/exemplo_uso_api.md) ou execute o script
    [`scripts/enviar_para_dify.py`](scripts/enviar_para_dify.py).
 4. Publique o aplicativo e utilize a interface de chat ou a API para enviar o prompt de texto e receber a resposta da LLM.
