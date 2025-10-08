@@ -4,7 +4,7 @@ Este guia mostra como enviar arquivos e um prompt para o workflow a partir de um
 
 ## Pré-requisitos
 
-- Workflow configurado no Dify com os campos `prompt_usuario` e `arquivos` conforme o blueprint fornecido.
+- Workflow configurado no Dify com os campos `prompt_usuario` e `arquivos` conforme a DSL [`workflow/dify_app.yml`](../workflow/dify_app.yml).
 - Uma API Key de **Server-side** obtida na interface do Dify.
 - Python 3.9+ instalado no ambiente local com a biblioteca `requests`.
 
@@ -73,7 +73,21 @@ A resposta incluirá o texto resumido ou o HTML do gráfico, conforme o roteamen
 
 ## 4. Tratamento da resposta
 
-O workflow retorna um JSON. Para tarefas de resumo, o texto principal estará no campo `data.outputs.resumo.resposta_texto`. Para tarefas de gráfico, utilize o `data.outputs.graficos.explicacao` para a descrição e `data.outputs.graficos.grafico_html` para o conteúdo visual.
+O workflow retorna um JSON contendo as saídas de cada nó. No blueprint fornecido, procure pelos nós `1007` (resposta de resumo) e `1008` (resposta de gráfico) dentro de `data.outputs`:
+
+```json
+{
+  "data": {
+    "outputs": {
+      "1007": {"answer": "..."},
+      "1008": {"answer": "..."}
+    }
+  }
+}
+```
+
+- Se a execução seguiu o caminho de resumo, utilize `data.outputs["1007"].answer`.
+- Se gerou gráfico, leia `data.outputs["1008"].answer`, que inclui a explicação textual e o HTML do gráfico.
 
 ## 5. Dicas adicionais
 

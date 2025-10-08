@@ -15,7 +15,7 @@ O objetivo é fornecer um blueprint reproduzível que possa ser importado e cust
 ├── docs/
 │   └── configuracao_app.md  # Tutorial detalhado para criar o app no Dify
 ├── workflow/
-│   ├── blueprint.json       # Blueprint exportável do workflow
+│   ├── dify_app.yml         # DSL exportável do workflow
 │   └── snippets/
 │       ├── ingestao_arquivos.py  # Script de nó "Code" para leitura e junção dos arquivos
 │       └── graficos.py           # Script de nó "Code" para gerar gráficos a partir de dados tabulares
@@ -36,7 +36,7 @@ Antes de importar o blueprint ou montar o fluxo manualmente, garanta que:
 
 1. Leia o guia em [`docs/configuracao_app.md`](docs/configuracao_app.md) para entender a arquitetura e, se necessário, montar o fluxo manualmente pela interface do Dify.
 2. Consulte [`docs/exemplo_uso_api.md`](docs/exemplo_uso_api.md) para aprender como anexar arquivos e executar o workflow via API.
-3. Se desejar importar diretamente, utilize o arquivo [`workflow/blueprint.json`](workflow/blueprint.json) através da funcionalidade **Import Workflow** do Dify.
+3. Se desejar importar diretamente, utilize o arquivo [`workflow/dify_app.yml`](workflow/dify_app.yml) através da funcionalidade **Import Workflow** do Dify.
 4. Ajuste o prompt do bloco de LLM para adequar o tom/idioma desejado ou para trabalhar com modelos específicos.
 5. Publique o aplicativo e utilize a interface de chat ou a API (com o script [`scripts/enviar_para_dify.py`](scripts/enviar_para_dify.py)) para enviar o prompt, anexar os arquivos e receber o resumo ou gráfico retornado.
 

@@ -78,9 +78,19 @@ def _load_tabular(data: bytes, extension: str) -> pd.DataFrame:
 
 
 def main(inputs: Dict[str, Any]) -> Dict[str, Any]:
-    arquivos = inputs.get("arquivos") or []
-    if not isinstance(arquivos, list):
+    arquivos_entrada = inputs.get("arquivos") or []
+    if isinstance(arquivos_entrada, list):
+        arquivos = list(arquivos_entrada)
+    elif arquivos_entrada:
         raise ValueError("Esperava-se uma lista de arquivos em 'arquivos'.")
+    else:
+        arquivos = []
+
+    anexos_start = inputs.get("anexos_start") or []
+    if isinstance(anexos_start, list):
+        arquivos.extend(anexos_start)
+    elif anexos_start:
+        raise ValueError("Esperava-se uma lista de arquivos em 'anexos_start'.")
 
     textos: List[str] = []
     tabelas: Dict[str, List[Dict[str, Any]]] = {}

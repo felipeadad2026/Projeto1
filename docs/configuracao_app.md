@@ -1,7 +1,7 @@
 # Configuração do App no Dify
 
 Este guia descreve passo a passo como criar, no Dify, um aplicativo de Workflow capaz de receber múltiplos arquivos, interpretar um
-prompt do usuário, enviar as informações para um modelo GPT e responder com um resumo ou com gráficos baseados nos dados.
+prompt do usuário, enviar as informações para um modelo GPT e responder com um resumo ou com gráficos baseados nos dados. Caso prefira importar tudo pronto, utilize o DSL [`workflow/dify_app.yml`](../workflow/dify_app.yml) disponível neste repositório.
 
 > **Dica:** Todas as strings de prompt e scripts mencionados abaixo estão neste repositório para facilitar o copiar/colar.
 
@@ -13,17 +13,16 @@ prompt do usuário, enviar as informações para um modelo GPT e responder com u
 
 ## 2. Formulário de entrada
 
-1. Clique no nó **Start** e configure os campos de entrada:
-   - `prompt_usuario` (tipo `Paragraph`, obrigatório): instruções que o usuário deseja executar (resumir, gerar gráfico, etc.).
-   - `arquivos` (tipo `File`, múltiplo, obrigatório): os arquivos que serão enviados para análise.
-2. Opcionalmente, adicione um placeholder no prompt orientando o usuário a especificar se deseja **resumo** ou **gráfico**.
+1. Clique no nó **Start** e configure o campo de entrada `prompt_usuario` (tipo `Paragraph`, obrigatório) para receber as instruções do usuário.
+2. Os arquivos podem ser anexados pelo usuário diretamente no chat (recurso de upload do Dify) ou, se preferir, adicione um campo do tipo `File` ao nó Start e conecte-o ao nó de ingestão. O blueprint em [`workflow/dify_app.yml`](../workflow/dify_app.yml) já referencia automaticamente os arquivos enviados (`sys.files`).
+3. Opcionalmente, adicione um placeholder no prompt orientando o usuário a especificar se deseja **resumo** ou **gráfico**.
 
 ## 3. Ingestão e pré-processamento de arquivos
 
 1. Adicione um nó **Code** (Python) chamado `Ingestão` logo após o Start.
 2. Cole o conteúdo de [`workflow/snippets/ingestao_arquivos.py`](../workflow/snippets/ingestao_arquivos.py) no editor de código.
 3. Configure as **Entradas** do nó:
-   - `arquivos`: conecte ao campo `arquivos` do Start.
+   - `arquivos`: conecte ao campo `arquivos` do Start ou ao seletor `sys.files` (conforme adotado no blueprint exportado).
 4. Configure as **Saídas** do nó (todas do tipo `string`):
    - `conteudo_concatenado`
    - `metadados`
@@ -94,13 +93,10 @@ pedidos comuns (linha, barra, pizza, dispersão) e suporta seleção de colunas.
 
 ## 7. Montar a resposta final
 
-1. Após o Condition, adicione um nó **Response**.
-2. Conecte o caminho verdadeiro (resumo) com o campo `mensagem` usando `Resumo.resposta_texto` (tipo `text`).
-3. Conecte o caminho falso (gráfico) com dois blocos no Response:
-   - `mensagem` (tipo `text`) usando `Preparar gráfico.explicacao`
-   - `grafico` (tipo `rich_text`) contendo o HTML retornado pelo script (`Preparar gráfico.grafico_html`)
-
-Assim, quando o usuário pedir um gráfico, ele receberá a explicação e o gráfico embutido (ou um link/base64 conforme o front-end).
+1. Após o Condition, adicione dois nós **Answer** (um para cada caminho):
+   - `Resposta resumo`: referencie `Resumo.resposta_texto` como campo `answer`.
+   - `Resposta gráfico`: combine `Preparar gráfico.explicacao` e `Preparar gráfico.grafico_html` em um bloco Markdown/HTML.
+2. Ao publicar, o Dify exibirá automaticamente a resposta correta conforme o caminho percorrido.
 
 ## 8. Testes
 
