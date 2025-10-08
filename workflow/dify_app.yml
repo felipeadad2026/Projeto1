@@ -68,7 +68,8 @@ workflow:
         title: Start
         type: start
         variables:
-        - label: prompt_usuario
+        - id: prompt_usuario
+          label: prompt_usuario
           max_length: null
           options: []
           required: true
