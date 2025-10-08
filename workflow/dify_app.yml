@@ -1,0 +1,157 @@
+kind: app
+version: 0.4.0
+app:
+  description: "Fluxo simples que envia um prompt de texto para um modelo OpenAI e retorna a resposta."
+  icon: "💬"
+  icon_background: '#D2E3FC'
+  mode: workflow
+  name: prompt_texto_llm
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.2.5@373362a028986aae53a7baf73a7f11991ba3c22c69eaf97d6cde048cfd4a998
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions: []
+      allowed_file_types: []
+      allowed_file_upload_methods: []
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 0
+        image_file_size_limit: 20
+        pdf_file_size_limit: 20
+        single_file_size_limit: 20
+        video_file_size_limit: 100
+    opening_statement:
+      enabled: false
+      text: ''
+    sensitive_word_avoidance:
+      enabled: false
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1001-source-1002-target
+      source: '1001'
+      sourceHandle: source
+      target: '1002'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1002-source-1003-target
+      source: '1002'
+      sourceHandle: source
+      target: '1003'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables:
+        - label: prompt_usuario
+          max_length: null
+          options: []
+          required: true
+          type: paragraph
+          variable: prompt_usuario
+      height: 90
+      id: '1001'
+      position:
+        x: 0
+        y: 0
+      positionAbsolute:
+        x: 0
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 240
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            frequency_penalty: 0
+            max_tokens: 1024
+            presence_penalty: 0
+            stop: []
+            temperature: 0.7
+            top_p: 1
+          mode: chat
+          name: gpt-4o-mini
+          provider: langgenius/openai/openai
+        prompt_template:
+        - role: system
+          text: 'Você é um assistente útil que responde diretamente às solicitações do usuário.'
+        - role: user
+          text: '{{#1001.prompt_usuario#}}'
+        selected: false
+        title: Responder com LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 120
+      id: '1002'
+      position:
+        x: 360
+        y: 0
+      positionAbsolute:
+        x: 360
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 320
+    - data:
+        answer: '{{#1002.text#}}'
+        desc: ''
+        selected: false
+        title: Resposta final
+        type: answer
+        variables: []
+      height: 90
+      id: '1003'
+      position:
+        x: 740
+        y: 0
+      positionAbsolute:
+        x: 740
+        y: 0
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 240
+    viewport:
+      x: 0
+      y: 0
+      zoom: 1
