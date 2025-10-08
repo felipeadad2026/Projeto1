@@ -1,12 +1,12 @@
 # Exemplo de consumo do workflow via API do Dify
 
-Este guia mostra como enviar arquivos e um prompt para o workflow a partir de uma aplicação externa.
+Este guia mostra como enviar apenas um prompt de texto para o workflow e recuperar a resposta retornada pela LLM.
 
 ## Pré-requisitos
 
-- Workflow configurado no Dify com os campos `prompt_usuario` e `arquivos` conforme a DSL [`workflow/dify_app.yml`](../workflow/dify_app.yml).
-- Uma API Key de **Server-side** obtida na interface do Dify.
-- Python 3.9+ instalado no ambiente local com a biblioteca `requests`.
+- Workflow publicado no Dify com o campo `prompt_usuario` conforme o blueprint [`../workflow/dify_app.yml`](../workflow/dify_app.yml);
+- Uma API Key de **Server-side** obtida na interface do Dify;
+- Python 3.9+ instalado no ambiente local com a biblioteca `requests` (caso utilize o script fornecido).
 
 ## 1. Instalando dependências
 
@@ -16,42 +16,26 @@ source .venv/bin/activate
 pip install requests
 ```
 
-## 2. Enviando arquivos e prompt via script Python
+## 2. Enviando prompt via script Python
 
-Utilize o script [`scripts/enviar_para_dify.py`](../scripts/enviar_para_dify.py) fornecido neste repositório. Ele realiza:
-
-1. Upload de cada arquivo para o endpoint `/v1/files/upload`;
-2. Execução do workflow através do endpoint `/v1/workflows/run` com `response_mode` igual a `blocking`;
-3. Impressão da resposta completa em JSON.
+Use o script [`scripts/enviar_para_dify.py`](../scripts/enviar_para_dify.py). Ele envia o prompt diretamente para o endpoint
+`/v1/workflows/run` e imprime a resposta completa em JSON.
 
 ### Uso
 
 ```bash
 python scripts/enviar_para_dify.py \
   <WORKFLOW_ID> \
-  "Elabore um resumo executivo dos documentos" \
-  dados/relatorio_financeiro.xlsx anexos/resumo.txt \
+  "Explique em poucas linhas o que é o Dify" \
   --base-url "https://api.sua-instancia-dify.com" \
   --api-key "SEU_API_KEY"
 ```
 
-Substitua `WORKFLOW_ID` pelo identificador do workflow (disponível na interface do Dify) e adapte o prompt conforme a tarefa desejada. O script aceita múltiplos arquivos na mesma execução.
+Substitua `WORKFLOW_ID` pelo identificador do workflow exibido na interface do Dify e adapte o prompt conforme necessário.
 
 ## 3. Consumindo via `curl`
 
-Caso prefira uma chamada manual, o fluxo é dividido em duas etapas.
-
-### 3.1 Upload dos arquivos
-
-```bash
-curl -X POST "https://api.sua-instancia-dify.com/v1/files/upload" \
-  -H "Authorization: Bearer SEU_API_KEY" \
-  -F "file=@anexos/resumo.txt"
-```
-
-A resposta conterá um `id`. Repita para cada arquivo que desejar anexar e guarde os `id`s.
-
-### 3.2 Execução do workflow
+Se preferir fazer a chamada manualmente:
 
 ```bash
 curl -X POST "https://api.sua-instancia-dify.com/v1/workflows/run" \
@@ -60,38 +44,18 @@ curl -X POST "https://api.sua-instancia-dify.com/v1/workflows/run" \
   -d '{
     "workflow_id": "WORKFLOW_ID",
     "inputs": {
-      "prompt_usuario": "Construa um gráfico com base nos dados fornecidos",
-      "arquivos": [
-        {"type": "file", "file_id": "ID_DO_ARQUIVO"}
-      ]
+      "prompt_usuario": "Gere uma lista de ideias para um workshop"
     },
     "response_mode": "blocking"
   }'
 ```
 
-A resposta incluirá o texto resumido ou o HTML do gráfico, conforme o roteamento configurado no workflow.
+A resposta conterá o JSON do workflow, incluindo o texto retornado pelo nó Answer. No blueprint fornecido, você encontrará o
+conteúdo em `data.outputs["1003"].answer`.
 
-## 4. Tratamento da resposta
+## 4. Dicas adicionais
 
-O workflow retorna um JSON contendo as saídas de cada nó. No blueprint fornecido, procure pelos nós `1007` (resposta de resumo) e `1008` (resposta de gráfico) dentro de `data.outputs`:
-
-```json
-{
-  "data": {
-    "outputs": {
-      "1007": {"answer": "..."},
-      "1008": {"answer": "..."}
-    }
-  }
-}
-```
-
-- Se a execução seguiu o caminho de resumo, utilize `data.outputs["1007"].answer`.
-- Se gerou gráfico, leia `data.outputs["1008"].answer`, que inclui a explicação textual e o HTML do gráfico.
-
-## 5. Dicas adicionais
-
-- Quando o arquivo for tabular, forneça instruções claras sobre o tipo de gráfico desejado.
-- Para arquivos grandes, considere resumir ou limpar os dados previamente para reduzir o custo de tokens.
-- Guarde os `file_id`s retornados pelo upload caso queira reutilizar o mesmo arquivo em múltiplas execuções.
-- Em ambientes autogerenciados, valide se o backend do Dify está com suporte a uploads habilitado.
+- Ajuste os parâmetros do nó LLM (temperatura, max tokens) diretamente no Dify se quiser respostas mais criativas ou concisas.
+- Para registrar apenas a mensagem final, você pode extrair `data.outputs["1002"].text`, que é a saída bruta do nó LLM.
+- Utilize `response_mode: streaming` se desejar receber tokens gradualmente (lembre-se de adaptar o cliente HTTP para lidar com
+  stream).
