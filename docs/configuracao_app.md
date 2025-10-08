@@ -15,9 +15,10 @@ Caso prefira importar tudo pronto, utilize o arquivo [`../workflow/dify_app.yml`
 
 1. Clique no nó **Start**.
 2. Adicione um campo chamado `prompt_usuario`:
-   - Tipo: `Paragraph` (texto longo);
+   - Tipo: `Text Input` (texto curto);
+   - Placeholder sugerido: "Descreva o que deseja perguntar à LLM";
    - Obrigatório: `Yes`;
-   - Label sugerido: "Sua pergunta".
+   - Label sugerido: "Prompt do usuário".
 3. Não é necessário adicionar campos de upload ou outras variáveis.
 
 ## 3. Adicionar o nó de LLM

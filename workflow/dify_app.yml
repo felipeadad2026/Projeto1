@@ -13,17 +13,7 @@ workflow:
   environment_variables: []
   features:
     file_upload:
-      allowed_file_extensions: []
-      allowed_file_types: []
-      allowed_file_upload_methods: []
       enabled: false
-      fileUploadConfig:
-        audio_file_size_limit: 50
-        batch_count_limit: 0
-        image_file_size_limit: 20
-        pdf_file_size_limit: 20
-        single_file_size_limit: 20
-        video_file_size_limit: 100
     opening_statement:
       enabled: false
       text: ''
@@ -33,8 +23,6 @@ workflow:
       enabled: false
     text_to_speech:
       enabled: false
-      language: ''
-      voice: ''
   graph:
     edges:
     - data:
@@ -69,11 +57,12 @@ workflow:
         type: start
         variables:
         - id: prompt_usuario
-          label: prompt_usuario
+          label: Prompt do usuário
           max_length: null
           options: []
+          placeholder: 'Descreva o que deseja perguntar à LLM'
           required: true
-          type: paragraph
+          type: text-input
           variable: prompt_usuario
       height: 90
       id: '1001'

@@ -38,6 +38,18 @@ Antes de importar o blueprint ou recriar o fluxo manualmente, confirme que:
    [`scripts/enviar_para_dify.py`](scripts/enviar_para_dify.py).
 4. Publique o aplicativo e utilize a interface de chat ou a API para enviar o prompt de texto e receber a resposta da LLM.
 
+## Solução de problemas ao importar no Dify
+
+Se a tela do Dify exibir **Application error** ou mensagens no console do navegador indicando bloqueio de scripts por *Content
+Security Policy*, experimente as etapas abaixo:
+
+- Utilize uma janela anônima/privada ou desative extensões que injetam scripts (ex.: plugins corporativos de descontos,
+  bloqueadores ou ferramentas de pin). Esses complementos costumam inserir recursos inline que o Dify rejeita por segurança.
+- Atualize a página após o login e faça o upload novamente do arquivo [`workflow/dify_app.yml`](workflow/dify_app.yml). O DSL
+  fornecido não depende de scripts externos; portanto, erros persistentes normalmente estão ligados ao ambiente do navegador.
+- Caso o erro continue, importe o arquivo em outro navegador suportado oficialmente (Chrome, Edge ou Firefox) para descartar
+  caches ou extensões problemáticas no navegador atual.
+
 ## Como enviar este projeto para o GitHub
 
 Caso deseje publicar este repositório em uma conta do GitHub, siga os passos abaixo:
